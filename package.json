@@ -1,17 +1,18 @@
 {
     "main": "./build/app.js",
     "dependencies": {
+        "@fastify/mysql": "^4.3.0",
         "fastify": "^4.27.0"
     },
     "devDependencies": {
         "@types/node": "^20.12.11",
-        "typescript": "^5.4.5",
         "cross-env": "^7.0.3",
         "fastify-tsconfig": "^2.0.0",
         "nodemon": "^3.1.0",
         "prettier": "^3.2.5",
         "rimraf": "^5.0.5",
-        "tsconfig-paths": "^4.2.0"
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "^5.4.5"
     },
     "scripts": {
         "build": "npx tsc",
