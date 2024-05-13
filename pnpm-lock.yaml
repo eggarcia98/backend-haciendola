@@ -5,20 +5,23 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fastify/env':
+    specifier: ^4.3.0
+    version: 4.3.0
   '@fastify/mysql':
     specifier: ^4.3.0
     version: 4.3.0
   fastify:
     specifier: ^4.27.0
     version: 4.27.0
+  fastify-env:
+    specifier: ^2.2.0
+    version: 2.2.0
 
 devDependencies:
   '@types/node':
     specifier: ^20.12.11
     version: 20.12.11
-  cross-env:
-    specifier: ^7.0.3
-    version: 7.0.3
   fastify-tsconfig:
     specifier: ^2.0.0
     version: 2.0.0
@@ -46,6 +49,13 @@ packages:
       ajv: 8.13.0
       ajv-formats: 2.1.1(ajv@8.13.0)
       fast-uri: 2.3.0
+    dev: false
+
+  /@fastify/env@4.3.0:
+    resolution: {integrity: sha512-WSredffWvaYjiwHGK5wvY33LFi39gAasBMWelglA6Jk+d7uj/ZWp7icaPoM0kSR5g9M8OOALEvk+8SXiNhK1YA==}
+    dependencies:
+      env-schema: 5.2.1
+      fastify-plugin: 4.5.1
     dev: false
 
   /@fastify/error@3.4.1:
@@ -267,14 +277,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /cross-env@7.0.3:
-    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
-    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
-    hasBin: true
-    dependencies:
-      cross-spawn: 7.0.3
-    dev: true
-
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -301,6 +303,25 @@ packages:
     engines: {node: '>=0.10'}
     dev: false
 
+  /dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv-expand@5.1.0:
+    resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}
+    dev: false
+
+  /dotenv@11.0.0:
+    resolution: {integrity: sha512-Fp/b504Y5W+e+FpCxTFMUZ7ZEQkQYF0rx+KZtmwixJxGQbLHrhCwo3FjZgNC8vIfrSi29PABNbMoCGD9YoiXbQ==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+    dev: false
+
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
@@ -312,6 +333,22 @@ packages:
   /emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
+
+  /env-schema@3.5.2:
+    resolution: {integrity: sha512-mSCYvxQLrJ3Z641CpCSvU2UIFPjDNqZ9yUfqWdx2FMXfccWtYrJEa+pR9mc3YyINvmnlXdbmD5fBx1NSlipMfw==}
+    dependencies:
+      ajv: 8.13.0
+      dotenv: 11.0.0
+      dotenv-expand: 5.1.0
+    dev: false
+
+  /env-schema@5.2.1:
+    resolution: {integrity: sha512-gWMNrQ3dVHAZcCx7epiFwgXcyfBh4heD/6+OK3bEbke3uL+KqwYA9nUOwzJyRZh1cJOFcwdPuY1n0GKSFlSWAg==}
+    dependencies:
+      ajv: 8.13.0
+      dotenv: 16.4.5
+      dotenv-expand: 10.0.0
+    dev: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
@@ -360,6 +397,25 @@ packages:
 
   /fast-uri@2.3.0:
     resolution: {integrity: sha512-eel5UKGn369gGEWOqBShmFJWfq/xSJvsgDzgLYC845GneayWvXBf0lJCBn5qTABfewy1ZDPoaR5OZCP+kssfuw==}
+    dev: false
+
+  /fastify-env@2.1.1:
+    resolution: {integrity: sha512-5IyYR+d+0/hwae/PpC6oWb+hlMpBqG1MuWWTEbFR2uzGhDXX/rCp4gdBrodt7SndOyvVlF+Z8QZ0fGlXPWtIOw==}
+    dependencies:
+      env-schema: 3.5.2
+      fastify-plugin: 3.0.1
+    dev: false
+
+  /fastify-env@2.2.0:
+    resolution: {integrity: sha512-WlNsLv+SfIyYsAVozdA2dby09cz7nMlOHDNWKlwb5eXIkg9USyYEAM5g371N+KMsc7hIB0gxn4HiHU9XGafAdA==}
+    deprecated: Please use @fastify/env@3.0.0 instead
+    dependencies:
+      fastify-env-deprecated: /fastify-env@2.1.1
+      process-warning: 1.0.0
+    dev: false
+
+  /fastify-plugin@3.0.1:
+    resolution: {integrity: sha512-qKcDXmuZadJqdTm6vlCqioEbyewF60b/0LOFCcYN1B6BIZGlYJumWWOYs70SFYLDAH4YqdE1cxH/RKMG7rFxgA==}
     dev: false
 
   /fastify-plugin@4.5.1:
@@ -706,6 +762,10 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
     dev: true
+
+  /process-warning@1.0.0:
+    resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
+    dev: false
 
   /process-warning@3.0.0:
     resolution: {integrity: sha512-mqn0kFRl0EoqhnL0GQ0veqFHyIN1yig9RHh/InzORTUiZHFRAur+aMtRkELNwGs9aNwKS6tg/An4NYBPGwvtzQ==}

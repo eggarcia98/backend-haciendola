@@ -13,14 +13,21 @@ const paramsHasId = (obj: unknown): obj is FastifyParams => {
     );
 };
 
-export default async function userController(fastify: MySqlFastifyInstance) {
+const hasMysqlObject = (obj: unknown): obj is MySqlFastifyInstance => {
+    return (obj as MySqlFastifyInstance)?.mysql !== undefined;
+};
+
+export default async function userController(fastify: FastifyInstance) {
     // GET /api/v1/user
 
     fastify.get(
-        "/product/:sku",
+        "/:sku",
         function (Request: FastifyRequest, Reply: FastifyReply) {
+            console.log("RUTA MYSQL", Request.params);
             if (paramsHasId(Request.params)) {
-                fastify.mysql.query(
+                if (!hasMysqlObject(fastify)) Reply.send({ error: "Error" });
+
+                (fastify as MySqlFastifyInstance).mysql.query(
                     "SELECT id, username, hash, salt FROM users WHERE id=?",
                     [Request.params.sku],
                     function onResult(err: unknown, result: unknown) {
