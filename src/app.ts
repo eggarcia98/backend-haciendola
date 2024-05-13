@@ -26,6 +26,10 @@ server.register(fastifyEnv, options).then((err: any) => {
     server.register(router);
     const FASTIFY_PORT = Number(server.config.FASTIFY_PORT) || 3006;
 
+    server.register(require("fastify-bcrypt"), {
+        saltWorkFactor: 12,
+    });
+
     server.listen({ port: FASTIFY_PORT });
 
     console.log(

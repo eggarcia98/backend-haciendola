@@ -14,3 +14,7 @@ interface Product {
 interface MySqlFastifyInstance extends FastifyInstance {
     mysql: any;
 }
+
+interface BcryptFastifyInstance extends FastifyInstance {
+    bcrypt: any;
+}
