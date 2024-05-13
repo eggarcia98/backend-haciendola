@@ -1,18 +1,33 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import fastify from "fastify";
+import { MySqlFastifyInstance } from "../types";
 
-export default async function userController(fastify: FastifyInstance) {
+interface FastifyParams {
+    sku: string;
+    ["any"]: any;
+}
+
+const paramsHasId = (obj: unknown): obj is FastifyParams => {
+    return (
+        (obj as FastifyParams)?.sku !== undefined &&
+        typeof (obj as FastifyParams).sku === "string"
+    );
+};
+
+export default async function userController(fastify: MySqlFastifyInstance) {
     // GET /api/v1/user
-    
-    fastify.get("/user/:id", function (req, reply) {
-        fastify.mysql.query(
-            "SELECT id, username, hash, salt FROM users WHERE id=?",
-            [req.params.id],
-            function onResult(err, result) {
-                reply.send(err || result);
+
+    fastify.get(
+        "/product/:sku",
+        function (Request: FastifyRequest, Reply: FastifyReply) {
+            if (paramsHasId(Request.params)) {
+                fastify.mysql.query(
+                    "SELECT id, username, hash, salt FROM users WHERE id=?",
+                    [Request.params.sku],
+                    function onResult(err: unknown, result: unknown) {
+                        Reply.send(err || result);
+                    }
+                );
             }
-        );
-    });
-
-
+        }
+    );
 }

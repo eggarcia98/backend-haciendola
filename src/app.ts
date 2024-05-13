@@ -12,6 +12,7 @@ server.register(mysqlPlugin, {
     connectionString: "mysql://root@localhost/mysql",
 });
 
+
 // Middleware: Router
 server.register(router);
 
