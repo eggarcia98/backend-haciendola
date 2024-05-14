@@ -1,5 +1,9 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { BcryptFastifyInstance, MySqlFastifyInstance } from "../types";
+import {
+    areValidUserCredential,
+    isAuthorized,
+} from "../utils/jwtAuthorization";
 
 interface UserBodyRequest {
     user: string;
@@ -10,39 +14,56 @@ const hasBcryptObject = (obj: unknown): obj is BcryptFastifyInstance => {
     return (obj as BcryptFastifyInstance)?.bcrypt !== undefined;
 };
 
-export async function authUserController(fastify: FastifyInstance) {
+export async function loginUserController(fastify: FastifyInstance) {
     fastify.post(
-        "/auth",
+        "/login",
         function (Request: FastifyRequest, Reply: FastifyReply) {
-            const { user, password } = Request.body as UserBodyRequest;
+            const userInput = Request.body as UserBodyRequest;
             const { bcrypt } = fastify as BcryptFastifyInstance;
             const { mysql } = fastify as MySqlFastifyInstance;
-            mysql.query(
-                "SELECT * FROM users WHERE user=?",
-                [user],
-                async function onResult(err: unknown, result: any) {
-                    const userData = result[0];
 
-                    const response = {
-                        auth: false,
-                        message: `${user} is not registered`,
-                    };
+            if (!areValidUserCredential(userInput))
+                Reply.status(300).send({
+                    authorized: false,
+                    message: "user credentials incomplete",
+                });
+            else {
+                mysql.query(
+                    "SELECT * FROM users WHERE user=?",
+                    [userInput.user],
+                    async function onResult(err: unknown, result: any) {
+                        const userRegistered = result[0];
 
-                    if (err) Reply.send(err);
-                    else if (!userData) Reply.send(response);
-                    else {
-                        const hash = result?.[0]?.password ?? "";
-                        const matched = await bcrypt.compare(password, hash);
+                        if (err) Reply.send(err);
+                        else {
+                            const authorized = await isAuthorized(
+                                userRegistered,
+                                userInput,
+                                bcrypt
+                            );
 
-                        response.auth = matched;
-                        response.message = matched
-                            ? "Authenticade"
-                            : "No Authenticated";
+                            const payload = {
+                                user: userInput.user,
+                                password: userInput.password,
+                            };
 
-                        Reply.send(response);
+                            const status = authorized ? 200 : 300;
+                            const message = authorized
+                                ? "Authorized"
+                                : "No Authorized";
+                            const token = authorized
+                                ? fastify.jwt.sign(payload)
+                                : undefined;
+
+                            Reply.status(status).send({
+                                message,
+                                token,
+                                authorized,
+                            });
+                        }
                     }
-                }
-            );
+                );
+            }
         }
     );
 }

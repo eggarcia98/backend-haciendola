@@ -2,9 +2,11 @@ import fastify from "fastify";
 
 import mysqlPlugin from "@fastify/mysql";
 import fastifyEnv from "@fastify/env";
+import fastifyJwt from "@fastify/jwt";
 
 import options from "./config";
 import router from "./router";
+import cors from "@fastify/cors";
 
 declare module "fastify" {
     interface FastifyInstance {
@@ -18,7 +20,7 @@ const server = fastify({
     logger: !!(process.env.NODE_ENV !== "development"),
 });
 
-server.register(fastifyEnv, options).then((err: any) => {
+server.register(fastifyEnv, options).then(async (err: any) => {
     server.register(mysqlPlugin, {
         connectionString: `mysql://${server.config.DB_USERNAME}:${server.config.DB_PASSWORD}@${server.config.DB_HOST}:${server.config.DB_PORT}/haciendola_db`,
     });
@@ -28,6 +30,17 @@ server.register(fastifyEnv, options).then((err: any) => {
 
     server.register(require("fastify-bcrypt"), {
         saltWorkFactor: 12,
+    });
+
+    server.register(fastifyJwt, {
+        secret: "supersecret",
+        sign: {
+            expiresIn: "5m",
+        },
+    });
+
+    await server.register(cors, {
+        origin: "*",
     });
 
     server.listen({ port: FASTIFY_PORT });
