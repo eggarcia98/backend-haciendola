@@ -8,6 +8,7 @@ import {
 interface UserBodyRequest {
     user: string;
     password: string;
+    token?: string;
 }
 
 const hasBcryptObject = (obj: unknown): obj is BcryptFastifyInstance => {
@@ -53,14 +54,66 @@ export async function loginUserController(fastify: FastifyInstance) {
                                 : "No Authorized";
                             const token = authorized
                                 ? fastify.jwt.sign(payload)
-                                : undefined;
+                                : "";
 
-                            Reply.status(status).send({
-                                message,
-                                token,
-                                authorized,
-                            });
+                            Reply.setCookie("AuthorizationToken", token, {
+                                httpOnly: true, // Highly recommended for security
+                                secure: true,
+                                expires: new Date(new Date().getTime() + 60000),
+                            })
+                                .status(status)
+                                .send({
+                                    message,
+                                    authorized,
+                                    token,
+                                });
                         }
+                    }
+                );
+            }
+        }
+    );
+
+    fastify.post(
+        "/authorizate",
+        function (Request: FastifyRequest, Reply: FastifyReply) {
+            const { bcrypt } = fastify as BcryptFastifyInstance;
+            const { mysql } = fastify as MySqlFastifyInstance;
+
+            const { AuthorizationToken } = Request.cookies;
+            console.log(AuthorizationToken);
+
+            if (!AuthorizationToken)
+                Reply.status(300).send({
+                    authorized: false,
+                    message: "No Authorized",
+                });
+            else {
+                const userLogged = fastify.jwt.verify(
+                    AuthorizationToken.split(" ")[1]
+                ) as any;
+
+                mysql.query(
+                    "SELECT * FROM users WHERE user=?",
+                    [userLogged?.user],
+                    async function onResult(err: unknown, result: any) {
+                        const userRegistered = result?.[0];
+
+                        const authorized = await isAuthorized(
+                            userRegistered,
+                            userLogged,
+                            bcrypt
+                        );
+
+                        const response = {
+                            authorized: authorized,
+                            message: "User authorized",
+                        };
+                        if (err) Reply.send(err);
+                        else if (!authorized)
+                            response.message = "Not valid user";
+
+                        Reply.send(response);
                     }
                 );
             }

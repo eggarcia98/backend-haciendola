@@ -3,6 +3,7 @@ import fastify from "fastify";
 import mysqlPlugin from "@fastify/mysql";
 import fastifyEnv from "@fastify/env";
 import fastifyJwt from "@fastify/jwt";
+import fastifyCookie from "@fastify/cookie";
 
 import options from "./config";
 import router from "./router";
@@ -39,8 +40,13 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         },
     });
 
+    server.register(fastifyCookie, {
+        hook: "onRequest",
+    });
+
     await server.register(cors, {
         origin: "*",
+        credentials: true,
     });
 
     server.listen({ port: FASTIFY_PORT });
