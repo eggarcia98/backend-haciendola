@@ -1,13 +1,18 @@
 import fastify from "fastify";
+import "reflect-metadata";
 
 import mysqlPlugin from "@fastify/mysql";
 import fastifyEnv from "@fastify/env";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
+import fastifyTypeOrm from "typeorm-fastify-plugin";
+import { Users } from "./database/entity/user.entity";
 
 import options from "./config";
 import router from "./router";
 import cors from "@fastify/cors";
+
+import { IQuerystring, IReply, IdeleteReply } from "./lib/interfaces";
 
 declare module "fastify" {
     interface FastifyInstance {
@@ -26,6 +31,19 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         connectionString: `mysql://${server.config.DB_USERNAME}:${server.config.DB_PASSWORD}@${server.config.DB_HOST}:${server.config.DB_PORT}/haciendola_db`,
     });
 
+    server.register(fastifyTypeOrm, {
+        namespace: "typeorm",
+        type: "mysql",
+        host: server.config.DB_HOST,
+        port: parseInt(server.config.DB_PORT || "3306"),
+        username: server.config.DB_USERNAME,
+        password: server.config.DB_PASSWORD,
+        database: "haciendola_db",
+        migrations: [__dirname + "/migration/*.ts"],
+        subscribers: [],
+        entities: [Users],
+    });
+
     server.register(router);
     const FASTIFY_PORT = Number(server.config.FASTIFY_PORT) || 3006;
 
@@ -36,7 +54,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
     server.register(fastifyJwt, {
         secret: "supersecret",
         sign: {
-            expiresIn: "5m",
+            expiresIn: "1m",
         },
     });
 
