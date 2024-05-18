@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { MySqlFastifyInstance, Product } from "../types";
+import { MySqlFastifyInstance } from "../types";
+import { Products } from "../database/entity/product.entity";
 
 interface FastifyParams {
     sku: string;
@@ -18,33 +19,32 @@ const hasMysqlObject = (obj: unknown): obj is MySqlFastifyInstance => {
 };
 
 export async function allProductsController(fastify: FastifyInstance) {
-    fastify.get("/", function (Request: FastifyRequest, Reply: FastifyReply) {
-        (fastify as MySqlFastifyInstance).mysql.query(
-            "SELECT * FROM products",
-            "",
-            function onResult(err: unknown, result: unknown) {
-                Reply.send(err || result);
-            }
-        );
-    });
+    fastify.get(
+        "/",
+        async function (Request: FastifyRequest, Reply: FastifyReply) {
+            const productRepository =
+                fastify.orm["typeorm"].getRepository(Products);
+            const products = await productRepository.find();
+
+            Reply.send(products);
+        }
+    );
 }
 
 export async function productController(fastify: FastifyInstance) {
-    // GET /api/v1/user
-
     fastify.get(
         "/:sku",
-        function (Request: FastifyRequest, Reply: FastifyReply) {
+        async function (Request: FastifyRequest, Reply: FastifyReply) {
             if (paramsHasId(Request.params)) {
                 if (!hasMysqlObject(fastify)) Reply.send({ error: "Error" });
 
-                (fastify as MySqlFastifyInstance).mysql.query(
-                    "SELECT * FROM products WHERE sku=?",
-                    [Request.params.sku],
-                    function onResult(err: unknown, result: Product[]) {
-                        Reply.send(err || result);
-                    }
-                );
+                const productRepository =
+                    fastify.orm["typeorm"].getRepository(Products);
+                const products = await productRepository.findOneBy({
+                    sku: Number(Request.params.sku),
+                });
+
+                Reply.send(products);
             }
         }
     );

@@ -13,6 +13,7 @@ import router from "./router";
 import cors from "@fastify/cors";
 
 import { IQuerystring, IReply, IdeleteReply } from "./lib/interfaces";
+import { Products } from "./database/entity/product.entity";
 
 declare module "fastify" {
     interface FastifyInstance {
@@ -41,7 +42,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         database: "haciendola_db",
         migrations: [__dirname + "/migration/*.ts"],
         subscribers: [],
-        entities: [Users],
+        entities: [Users, Products],
     });
 
     server.register(router);

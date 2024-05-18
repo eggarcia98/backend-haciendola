@@ -1,4 +1,4 @@
-import { UserType } from "./types";
+import { ProductType, UserType } from "./types";
 
 interface IReply {
     201: {
@@ -13,7 +13,7 @@ interface IReply {
     200: {
         success: boolean;
         data: {
-            users: UserType[];
+            users: UserType[] | ProductType[];
         };
     };
 }
