@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+    app:
+        build: .
+        ports:
+            - "3006:3006"
+        environment:
+            DB_PASSWORD: "haciendola-admin"
+            DB_USERNAME: "root"
+            DB_HOST: "db"
+            DB_PORT: 3306
+        depends_on:
+            - db
+        restart: on-failure # Restart policy
+
+    db:
+        image: mysql:8.4
+        container_name: haciendola-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "haciendola-admin"
+            MYSQL_DATABASE: "sys"
