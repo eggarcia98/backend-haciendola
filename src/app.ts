@@ -12,7 +12,6 @@ import options from "./config";
 import router from "./router";
 import cors from "@fastify/cors";
 
-import { IQuerystring, IReply, IdeleteReply } from "./lib/interfaces";
 import { Products } from "./database/entity/product.entity";
 
 declare module "fastify" {
@@ -46,7 +45,6 @@ server.register(fastifyEnv, options).then(async (err: any) => {
     });
 
     server.register(router);
-    const FASTIFY_PORT = Number(server.config.FASTIFY_PORT) || 3006;
 
     server.register(require("fastify-bcrypt"), {
         saltWorkFactor: 12,
@@ -68,9 +66,9 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         credentials: true,
     });
 
-    server.listen({ port: FASTIFY_PORT });
+    server.listen({ port: Number(server.config.API_PORT) });
 
     console.log(
-        `🚀  Fastify server running on port http://localhost:${FASTIFY_PORT}`
+        `🚀  Fastify server running on port http://localhost:${server.config.API_PORT}`
     );
 });

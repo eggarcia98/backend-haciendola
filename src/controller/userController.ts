@@ -71,8 +71,10 @@ export async function loginUserController(fastify: FastifyInstance) {
         async function (Request: FastifyRequest, Reply: FastifyReply) {
             const { bcrypt } = fastify as BcryptFastifyInstance;
             const { mysql } = fastify as MySqlFastifyInstance;
+            const body: any = Request.body;
 
-            const { AuthorizationToken } = Request.cookies;
+            const AuthorizationToken =
+                Request.cookies?.AuthorizationToken ?? body.AuthorizationToken;
 
             if (!AuthorizationToken)
                 Reply.status(300).send({

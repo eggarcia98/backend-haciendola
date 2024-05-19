@@ -13,8 +13,12 @@ const schema = {
         },
         DB_PORT: {
             type: "string",
-            default: "3306"
-        }
+            default: "3306",
+        },
+        API_PORT: {
+            type: "number",
+            default: 3006,
+        },
     },
 };
 
@@ -22,7 +26,7 @@ const options = {
     confKey: "config",
     schema,
     dotenv: true,
-    data: process.env
+    data: process.env,
 };
 
-export default options
+export default options;
