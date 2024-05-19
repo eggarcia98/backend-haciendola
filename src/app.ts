@@ -66,7 +66,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         credentials: true,
     });
 
-    server.listen({ port: Number(server.config.API_PORT) });
+    server.listen({ port: Number(server.config.API_PORT), host: "0.0.0.0" });
 
     console.log(
         `🚀  Fastify server running on port http://localhost:${server.config.API_PORT}`

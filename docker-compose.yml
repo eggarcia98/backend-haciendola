@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-    app:
+    haciendola-backend:
         build: .
         ports:
             - "3006:3006"
@@ -13,6 +13,8 @@ services:
         depends_on:
             - db
         restart: on-failure # Restart policy
+        networks:
+            - haciendola-network
 
     db:
         image: mysql:8.4
@@ -20,3 +22,8 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: "haciendola-admin"
             MYSQL_DATABASE: "sys"
+        networks:
+            - haciendola-network
+networks:
+    haciendola-network:
+        external: true
