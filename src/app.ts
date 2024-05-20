@@ -53,7 +53,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
     server.register(fastifyJwt, {
         secret: "supersecret",
         sign: {
-            expiresIn: "1m",
+            expiresIn: "5m",
         },
     });
 
