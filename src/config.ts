@@ -19,6 +19,9 @@ const schema = {
             type: "number",
             default: 3006,
         },
+        JWT_SECRET: {
+            type: "string",
+        },
     },
 };
 

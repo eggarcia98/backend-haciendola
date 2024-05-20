@@ -51,7 +51,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
     });
 
     server.register(fastifyJwt, {
-        secret: "supersecret",
+        secret: server.config.JWT_SECRET,
         sign: {
             expiresIn: "5m",
         },
@@ -66,7 +66,7 @@ server.register(fastifyEnv, options).then(async (err: any) => {
         credentials: true,
     });
 
-    server.listen({ port: Number(server.config.API_PORT), host: "0.0.0.0" });
+    server.listen({ port: Number(server.config.API_PORT)});
 
     console.log(
         `🚀  Fastify server running on port http://localhost:${server.config.API_PORT}`

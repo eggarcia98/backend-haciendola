@@ -10,6 +10,7 @@ services:
             DB_USERNAME: "root"
             DB_HOST: "db"
             DB_PORT: 3306
+            JWT_SECRET: "supersecret"
         depends_on:
             - db
         restart: on-failure # Restart policy
